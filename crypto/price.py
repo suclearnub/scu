@@ -21,7 +21,7 @@ class Price(BotModule):
         return string.split(".")[0]
 
     def price_change(self, percent, price):
-        return "{0:.2f}".format((float(price))/(1+(float(percent)/100)))
+        return "{0:.2f}".format(float(price)-((float(price))/(1+(float(percent)/100))))
 
     async def parse_command(self, message, client):
         msg = shlex.split(message.content)
