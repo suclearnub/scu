@@ -18,7 +18,7 @@ class Price(BotModule):
     module_version = '0.1.0'
 
     def price_change(self, percent, price):
-        return (float(price))/(1+(float(percent)/100))
+        return str((float(price))/(1+(float(percent)/100)))
 
     async def parse_command(self, message, client):
         msg = shlex.split(message.content)
