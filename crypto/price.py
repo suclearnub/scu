@@ -17,6 +17,9 @@ class Price(BotModule):
 
     module_version = '0.1.0'
 
+    def strip_dot(self, string):
+        return string.split(".")[0]
+
     def price_change(self, percent, price):
         return "{0:.2f}".format((float(price))/(1+(float(percent)/100)))
 
@@ -28,7 +31,7 @@ class Price(BotModule):
             embed = discord.Embed(title= data["name"] + " Information", description="#" + data["rank"] + " in terms of market capitalization")
             embed.add_field(name="Price", value="US$ " + data["price_usd"], inline=True)
             embed.add_field(name="24h Change", value=data["percent_change_24h"] + "% (" + self.price_change(data["percent_change_24h"], data["price_usd"]) + ")", inline=True)
-            embed.add_field(name="Market Capitalization", value="US$ " + "{:,}".format(int(data["market_cap_usd"])), inline=True)
-            embed.add_field(name="24h Volume", value="US$ " + "{:,}".format(int(data["24h_volume_usd"][:-2])), inline=True)
+            embed.add_field(name="Market Capitalization", value="US$ " + "{:,}".format(int(self.strip_dot(data["market_cap_usd"]))), inline=True)
+            embed.add_field(name="24h Volume", value="US$ " + "{:,}".format(int(self.strip_dot(data["24h_volume_usd"]))), inline=True)
             embed.set_footer(text="Information provided by coinmarketcap.com")
             await client.send_message(message.channel, embed=embed)
