@@ -5,11 +5,11 @@ import shlex
 from modules.BotModule import BotModule
 
 class Price(BotModule):
-    name = ''
+    name = 'price'
 
-    description = ''
+    description = 'Price checker for cryptocurrency'
 
-    help_text = ''
+    help_text = 'Displays price and stats about that cryptocurrency.'
 
     trigger_string = 'price'
 
@@ -18,7 +18,7 @@ class Price(BotModule):
     module_version = '0.1.0'
 
     def price_change(self, percent, price):
-        return (percent/100)*price
+        return (price)/(1+(percent/100))
 
     async def parse_command(self, message, client):
         msg = shlex.split(message.content)
