@@ -24,7 +24,7 @@ class Price(BotModule):
         msg = shlex.split(message.content)
         if len(msg) > 1:
             html = requests.get("https://api.coinmarketcap.com/v1/ticker/" + msg[1])
-            data = html.json()
+            data = html.json()[0]
             embed = discord.Embed(title= data["name"] + " Information", description="#" + data["rank"] + " in terms of market capitalization")
             embed.add_field(name="Price", value="$ " + data["price_usd"] + "USD", inline=True)
             embed.add_field(name="24h Change", value=data["percent_change_24h"] + "% (" + price_change(data["percent_change_24h"], data["price_usd"]) + ")", inline=True)
