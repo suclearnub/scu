@@ -29,6 +29,6 @@ class Price(BotModule):
             embed.add_field(name="Price", value="$ " + data["price_usd"] + "USD", inline=True)
             embed.add_field(name="24h Change", value=data["percent_change_24h"] + "% (" + self.price_change(data["percent_change_24h"], data["price_usd"]) + ")", inline=True)
             embed.add_field(name="Market Capitalization", value="US$" + "{:,}".format(int(data["market_cap_usd"])), inline=True)
-            embed.add_field(name="24h Volume", value="US$" + "{:,}".format(int(data["24h_volume_usd"])), inline=True)
+            embed.add_field(name="24h Volume", value="US$" + "{:,}".format(int(data["24h_volume_usd"][:-2])), inline=True)
             embed.set_footer(text="Information provided by coinmarketcap.com")
             await client.send_message(message.channel, embed=embed)
