@@ -2,7 +2,7 @@ import discord
 import requests
 import asyncio
 import shlex
-from modules.BotModule import BotModule
+from modules.botModule import BotModule
 
 class Price(BotModule):
     name = 'price'
@@ -23,7 +23,7 @@ class Price(BotModule):
     async def parse_command(self, message, client):
         msg = shlex.split(message.content)
         if len(msg) > 1:
-            html = requests.get("https://coinmarketcap.com/v1/ticker/" + msg[1])
+            html = requests.get("https://api.coinmarketcap.com/v1/ticker/" + msg[1])
             data = html.json()
             embed = discord.Embed(title= data["name"] + " Information", description="#" + data["rank"] + " in terms of market capitalization")
             embed.add_field(name="Price", value="$ " + data["price_usd"] + "USD", inline=True)
