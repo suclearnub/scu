@@ -3,6 +3,7 @@ import requests
 import asyncio
 import shlex
 from modules.botModule import BotModule
+from modules.crypto.enslookup import ENSLookup
 
 class ETHBlockExplorer(BotModule):
     name = 'ethblockexplorer'
@@ -33,6 +34,13 @@ class ETHBlockExplorer(BotModule):
 
     def hex_int(self, value):
         return int(value, 16)
+
+    def is_address(self, addr):
+        try:
+            int(addr, 16)
+            return True
+        except ValueError:
+            return False
 
     txn_types = {'std': 'Standard',
                  'ctt': 'Contract'}
@@ -65,6 +73,10 @@ class ETHBlockExplorer(BotModule):
                 await client.send_message(message.channel, embed=embed)
 
             elif msg[1] == 'address' or msg[1] == 'addr':
+                if self.is_address(msg[2]):
+                    pass
+                else:
+                    msg[2] = '0x' + ENSLookup(msg[2])[26:]
                 html = requests.get("https://api.etherscan.io/api?module=account&action=balance&address=" + msg[2] + "&tag=latest&apikey=" + self.api_key)
                 data = html.json()
                 embed = discord.Embed(title="Address information", description="Address: " + msg[2], color=0xecf0f1)
