@@ -23,14 +23,14 @@ class ETHBlockExplorer(BotModule):
     def ethprice(self):
         html = requests.get("https://api.coinmarketcap.com/v1/ticker/ethereum")
         data = html.json()[0]
-        return int(data["price-usd"])
+        return int(data["price_usd"].split(".")[0])
 
     def wei_to_eth(self, value):
-        return value/100000000000000
+        return value/1000000000000000000
 
     async def parse_command(self, message, client):
         msg = shlex.split(message.content)
-        price_one_ether = ethprice()
+        price_one_ether = self.ethprice()
         if len(msg) > 2: # !eth <type> <hash>
             if msg[1] == 'tx':
                 # TODO: Add tx
@@ -39,7 +39,7 @@ class ETHBlockExplorer(BotModule):
                 html = requests.get("https://api.etherscan.io/api?module=account&action=balance&address=" + msg[2] + "&tag=latest&apikey=" + self.api_key)
                 data = html.json()
                 embed = discord.Embed(title="Address information", description="Address: " + msg[2], color=0xecf0f1)
-                ether_balance = wei_to_eth(int(data["result"]))
-                embed.add_field(name="Balance", value=ether_balance + "(US$ " + ether_balance*price_one_ether + ")", inline=True)
+                ether_balance = self.wei_to_eth(int(data["result"]))
+                embed.add_field(name="Balance", value=str(ether_balance) + " (US$ " + "{0:.2f}".format(str(ether_balance*price_one_ether)) + ")", inline=True)
                 embed.set_footer(text="Powered by etherscan.io")
                 await client.send_message(message.channel, embed=embed)
