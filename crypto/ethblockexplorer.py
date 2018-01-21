@@ -40,6 +40,6 @@ class ETHBlockExplorer(BotModule):
                 data = html.json()
                 embed = discord.Embed(title="Address information", description="Address: " + msg[2], color=0xecf0f1)
                 ether_balance = self.wei_to_eth(int(data["result"]))
-                embed.add_field(name="Balance", value=str(ether_balance) + " (US$ " + "{0:.2f}".format(str(ether_balance*price_one_ether)) + ")", inline=True)
+                embed.add_field(name="Balance", value=str(ether_balance) + " (US$ " + "{0:.2f}".format(ether_balance*price_one_ether) + ")", inline=True)
                 embed.set_footer(text="Powered by etherscan.io")
                 await client.send_message(message.channel, embed=embed)
