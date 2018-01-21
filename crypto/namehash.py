@@ -1,3 +1,4 @@
+# Modified version of https://github.com/ConsenSys/ens-namehash-py
 import codecs
 import functools
 
