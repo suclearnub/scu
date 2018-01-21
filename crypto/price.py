@@ -29,7 +29,7 @@ class Price(BotModule):
             html = requests.get("https://api.coinmarketcap.com/v1/ticker/" + msg[1])
             data = html.json()[0]
             embed = discord.Embed(title= data["name"] + " Information", description="#" + data["rank"] + " in terms of market capitalization")
-            embed.add_field(name="Price", value="US$ " + data["price_usd"], inline=True)
+            embed.add_field(name="Price", value="US$ " + "{:,}".format(float(data["price_usd"])), inline=True)
             embed.add_field(name="24h Change", value=data["percent_change_24h"] + "% (" + self.price_change(data["percent_change_24h"], data["price_usd"]) + ")", inline=True)
             embed.add_field(name="Market Capitalization", value="US$ " + "{:,}".format(int(self.strip_dot(data["market_cap_usd"]))), inline=True)
             embed.add_field(name="24h Volume", value="US$ " + "{:,}".format(int(self.strip_dot(data["24h_volume_usd"]))), inline=True)

@@ -28,6 +28,12 @@ class ETHBlockExplorer(BotModule):
     def wei_to_eth(self, value):
         return value/1000000000000000000
 
+    def comma_money(self, value):
+        if type(value) == 'str':
+            return "{:,}".format(float(value))
+        else:
+            return "{:,}".format(value)
+
     async def parse_command(self, message, client):
         msg = shlex.split(message.content)
         price_one_ether = self.ethprice()
@@ -40,6 +46,6 @@ class ETHBlockExplorer(BotModule):
                 data = html.json()
                 embed = discord.Embed(title="Address information", description="Address: " + msg[2], color=0xecf0f1)
                 ether_balance = self.wei_to_eth(int(data["result"]))
-                embed.add_field(name="Balance", value=str(ether_balance) + " (US$ " + "{0:.2f}".format(ether_balance*price_one_ether) + ")", inline=True)
+                embed.add_field(name="Balance", value=str(ether_balance) + " (US$ " + self.comma_money("{0:.2f}".format(ether_balance*price_one_ether)) + ")", inline=True)
                 embed.set_footer(text="Powered by etherscan.io")
                 await client.send_message(message.channel, embed=embed)
