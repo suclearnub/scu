@@ -47,6 +47,8 @@ class ETHBlockExplorer(BotModule):
                 if data["input"] == "0x":
                     data["input"] = "0x0"
                 data = [dict([x, int(y,16)] for x, y in data.items())][0]
+                data["from"] = "0x" + str("{0:x}".format(data["from"]))
+                data["to"] = "0x" + str("{0:x}".format(data["to"]))
                 if data["input"] == 0:
                     txn_type = 'std'
                 else:
