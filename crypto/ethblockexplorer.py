@@ -46,7 +46,7 @@ class ETHBlockExplorer(BotModule):
                 data = html.json()["result"]
                 if data["input"] == "0x":
                     data["input"] = "0x0"
-                data = [dict([x, int(y,16)] for x, y in data.items())]
+                data = [dict([x, int(y,16)] for x, y in data.items())][0]
                 if data["input"] == 0:
                     txn_type = 'std'
                 else:
@@ -60,6 +60,7 @@ class ETHBlockExplorer(BotModule):
                 embed.add_field(name="Gas Consumed", value=self.comma_money(int(data["gas"])), inline=True)
                 embed.add_field(name="Gas Price", value=str(data["gasPrice"]/1000000000) + " GWei", inline=True)
                 embed.set_footer(text="Information provided by etherscan.io")
+                await client.send_message(message.channel, embed=embed)
 
             elif msg[1] == 'address' or msg[1] == 'addr':
                 html = requests.get("https://api.etherscan.io/api?module=account&action=balance&address=" + msg[2] + "&tag=latest&apikey=" + self.api_key)
