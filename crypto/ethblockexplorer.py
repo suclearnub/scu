@@ -37,7 +37,7 @@ class ETHBlockExplorer(BotModule):
 
     def is_address(self, addr):
         try:
-            int(msg[2], 16)
+            int(addr, 16)
             return True
         except ValueError:
             return False
