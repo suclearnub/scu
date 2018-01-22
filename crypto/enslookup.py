@@ -14,6 +14,6 @@ def data_resolver(addr):
 
 def ENSLookup(address):
     resolver_address = requests.get("https://api.etherscan.io/api?module=proxy&action=eth_call&to=" + ens_registry + "&data=" + data_registrar(address) + "&tag=latest&apikey=YourApiKeyToken")
-    resolver_address = '0x' + resolver_address.json["result"][26:]
+    resolver_address = '0x' + resolver_address.json()["result"][26:]
     html = requests.get("https://api.etherscan.io/api?module=proxy&action=eth_call&to=" + resolver_address + "&data=" + data_resolver(address) + "&tag=latest&apikey=YourApiKeyToken")
     return html.json()["result"]
