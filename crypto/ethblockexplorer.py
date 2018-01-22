@@ -84,6 +84,7 @@ class ETHBlockExplorer(BotModule):
                 data = html.json()
                 embed = discord.Embed(title="Address information", description="Address: " + msg[2], color=0xecf0f1)
                 ether_balance = self.wei_to_eth(int(data["result"]))
+                embed.set_thumbnail(url="https://eth.vanity.show/" + msg[2])
                 embed.add_field(name="Balance", value=str(ether_balance) + " ETH (US$ " + self.comma_money(float("{0:.2f}".format(ether_balance*price_one_ether))) + ")", inline=True)
                 embed.set_footer(text="Information provided by etherscan.io")
                 await client.send_message(message.channel, embed=embed)
