@@ -13,7 +13,15 @@ def data_resolver(addr):
     return '0x3b3b57de' + b.decode("unicode_escape")
 
 def ENSLookup(address):
-    resolver_address = requests.get("https://api.etherscan.io/api?module=proxy&action=eth_call&to=" + ens_registry + "&data=" + data_registrar(address) + "&tag=latest&apikey=YourApiKeyToken")
-    resolver_address = '0x' + resolver_address.json["result"][26:]
+    print("Get resolver: https://api.etherscan.io/api?module=proxy&action=eth_call&to=" + ens_registry + "&data=" + data_registrar(address) + "&tag=latest&apikey=YourApiKeyToken")
+
+    html = requests.get("https://api.etherscan.io/api?module=proxy&action=eth_call&to=" + ens_registry + "&data=" + data_registrar(address) + "&tag=latest&apikey=YourApiKeyToken")
+    print(html)
+
+    html = '0x' + html.json()["result"][26:]
+    print(html)
+
+    print("Get address: https://api.etherscan.io/api?module=proxy&action=eth_call&to=" + resolver_address + "&data=" + data_resolver(address) + "&tag=latest&apikey=YourApiKeyToken")
+
     html = requests.get("https://api.etherscan.io/api?module=proxy&action=eth_call&to=" + resolver_address + "&data=" + data_resolver(address) + "&tag=latest&apikey=YourApiKeyToken")
     return html.json()["result"]
