@@ -52,6 +52,10 @@ class ETHBlockExplorer(BotModule):
             if msg[1] == 'tx':
                 html = requests.get("https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=" + msg[2] + "&apikey=" + self.api_key)
                 data = html.json()["result"]
+                for k in data:
+                    if data[k] == None:
+                        data[k] == "0x0"
+
                 if data["input"] == "0x":
                     data["input"] = "0x0"
                 data = [dict([x, int(y,16)] for x, y in data.items())][0]
