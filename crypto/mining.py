@@ -36,7 +36,7 @@ class Mining(BotModule):
 
     def prettify_hashrate(self, raw_hashrate, coin):
         try:
-            return str(self.comma_money(raw_hashrate/factor[coin])) + ' ' + units[coin]
+            return str(self.comma_money(raw_hashrate/self.factor[coin])) + ' ' + self.units[coin]
         except KeyError:
             return str(self.comma_money(raw_hashrate)) + ' H/s'
 
@@ -75,7 +75,7 @@ class Mining(BotModule):
                     data = html.json()["getdashboarddata"]
                     embed = discord.Embed(title="Hashrate Information", description="On coin " + msg[2], color=0xb75853)
                     embed.add_field(name="Hashrate", value=self.prettify_hashrate(float(data["data"]["personal"]["hashrate"]), msg[2]), inline=True)
-                    embed.set_footer(text="Mining on https://miningpoolhub.com")
+                    embed.set_footer(text="Mining on https://miningpoolhub.com | Refreshes every 5 minutes")
                     await client.send_message(message.channel, embed=embed)
             elif msg[1] == 'rank':
                 pass
