@@ -2,14 +2,16 @@ import discord
 import requests
 import asyncio
 import shlex
-from modules.botModule import BotModule
+from modules.botModule import *
 
 class Mining(BotModule):
     name = 'mining'
 
     description = 'MiningPoolHub Stats'
 
-    help_text = 'Shows stats from MiningPoolHub'
+    help_text = 'Shows stats from MiningPoolHub.\n' \
+                '!mining id poolid apikey - Updates your API keys for the bot to use\n' \
+                '!mining hashrate coin - Checks your hashrate for a particular coin' \
 
     trigger_string = 'mining'
 
@@ -64,7 +66,7 @@ class Mining(BotModule):
                     msg = '[!] No coin specified.'
                     await client.send_message(message.channel, msg)
                 elif self.module_db.get(target_user.userid == message.author.id)['poolid'] is None or self.module_db.get(target_user.userid == message.author.id)['api'] is None:
-                    msg = '[!] No API setup. Setup using <prefix><addid> <poolid> <api_id>.'
+                    msg = '[!] No API setup. See !help mining for more information'
                     await client.send_message(message.channel, msg)
                 else:
                     user_id = self.module_db.get(target_user.userid == message.author.id)['poolid']
