@@ -54,8 +54,7 @@ class ETHBlockExplorer(BotModule):
                 data = html.json()["result"]
                 for k in data:
                     if data[k] == None:
-                        data[k] == "0x0"
-
+                        data[k] = "0x0"
                 if data["input"] == "0x":
                     data["input"] = "0x0"
                 data = [dict([x, int(y,16)] for x, y in data.items())][0]
