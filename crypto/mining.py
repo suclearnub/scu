@@ -66,6 +66,7 @@ class Mining(BotModule):
                     'skunkhash': 'MH-day',
                     'nist5': 'MH-day'
     }
+
     def prettify_hashrate(self, raw_hashrate, coin):
         try:
             return str(self.comma_money(raw_hashrate/self.factor[coin])) + ' ' + self.units[coin]
@@ -80,6 +81,7 @@ class Mining(BotModule):
         msg = shlex.split(message.content)
         if len(msg) > 1: # !mining <addid/hashrate/rank> ...
             if msg[1] == 'profit':
+                table = self.module_db.table('profit_hashrate')
                 if len(msg) < 3:
                     msg[2] = 'equihash'
                 try:
@@ -88,15 +90,28 @@ class Mining(BotModule):
                     msg = "[!] Algorithm does not exist."
                     await client.send_message(message.channel, embed=embed)
                     return
+                try:
+                    hashrate = int(msg[3])
+                    hash = True
+                except Exception:
+                    hash = False
                 html = requests.get("http://whattomine.com/coins.json")
                 data = html.json()["coins"]
                 filtered_coins = [[key, float(data[key]["btc_revenue24"])*get_price('bitcoin')/self.mining_speed[data[key]["algorithm"].lower()]] for key in data if data[key]["algorithm"].lower() == msg[2].lower()]
                 filtered_coins.sort(key=lambda x: x[1], reverse=True)
-                embed = discord.Embed(title="Mining Profitability", description="On algorithm " + msg[2])
+                embed = discord.Embed(title="Mining Profitability", description="On algorithm " + msg[2], color=0x2bc11b)
                 count = 1
                 for entry in filtered_coins:
                     if count <= 5:
-                        embed.add_field(name="#" + str(count) + ": " + str(entry[0]), value="US$ " + "{0:.6f}".format(entry[1]) + " " + self.mining_units[msg[2]], inline=False)
+                        if not hash:
+                            embed.add_field(name="#" + str(count) + ": " + str(entry[0]),
+                                            value="US$ " + "{0:.6f}".format(entry[1]) + " " + self.mining_units[msg[2]],
+                                            inline=False)
+                        else:
+                            embed.add_field(name="#" + str(count) + ": " + str(entry[0]),
+                                            value="US$ " + "{0:.6f}".format(entry[1]) + " " + self.mining_units[msg[2]] +
+                                                  "\n(US$ " + "{0:.2f}".format(entry[1]*hashrate) + "/day)",
+                                            inline=False)
                         count += 1;
                     else:
                         break
