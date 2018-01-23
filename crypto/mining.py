@@ -84,12 +84,9 @@ class Mining(BotModule):
                 table = self.module_db.table('profit_hashrate')
                 if len(msg) < 3:
                     msg[2] = 'equihash'
-                try:
-                    self.mining_units[msg[2]]
-                except KeyError:
+                if msg[2].lower() not in self.mining_units:
                     msg = "[!] Algorithm does not exist."
                     await client.send_message(message.channel, embed=embed)
-                    return
                 try:
                     hashrate = int(msg[3])
                     hash = True
