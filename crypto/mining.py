@@ -3,6 +3,7 @@ import requests
 import asyncio
 import shlex
 from modules.botModule import *
+from modules.crypto.utils import *
 
 class Mining(BotModule):
     name = 'mining'
@@ -21,6 +22,8 @@ class Mining(BotModule):
 
     api_key = ''
 
+    top_mining_results = 5
+
     units = {'bitcoin-gold': 'Sol/s',
              'zclassic': 'Sol/s',
              'zcash': 'Sol/s',
@@ -34,6 +37,35 @@ class Mining(BotModule):
              'zencash': 0.001,
              }
 
+    mining_speed = {'ethash': 84,
+                    'groest': 63.9,
+                    'x11gost': 20.1,
+                    'cryptonight': 2190,
+                    'equihash': 870,
+                    'lyra2rev2': 14700,
+                    'neoscrypt': 1950,
+                    'lbry': 315,
+                    'blake2b': 3450,
+                    'blake14r': 5910,
+                    'pascal': 2100,
+                    'skunkhash': 54,
+                    'nist5': 57
+                    }
+
+    mining_units = {'ethash': 'MH-day',
+                    'groest': 'MH-day',
+                    'x11gost': 'MH-day',
+                    'cryptonight': 'H-day',
+                    'equihash': 'H-day',
+                    'lyra2rev2': 'KH-day',
+                    'neoscrypt': 'KH-day',
+                    'lbry': 'MH-day',
+                    'blake2b': 'MH-day',
+                    'blake14r': 'MH-day',
+                    'pascal': 'MH-day',
+                    'skunkhash': 'MH-day',
+                    'nist5': 'MH-day'
+    }
     def prettify_hashrate(self, raw_hashrate, coin):
         try:
             return str(self.comma_money(raw_hashrate/self.factor[coin])) + ' ' + self.units[coin]
@@ -46,11 +78,23 @@ class Mining(BotModule):
     async def parse_command(self, message, client):
         target_user = Query()
         msg = shlex.split(message.content)
-        if len(msg) == 1: # !mining
-            pass
-            # TODO: Mining profitability
-        elif len(msg) > 1: # !mining <addid/hashrate/rank> ...
-            if msg[1] == 'id':
+        if len(msg) > 1: # !mining <addid/hashrate/rank> ...
+            if msg[1] == 'profit':
+                if len(msg) < 3:
+                    msg[2] = 'equihash'
+                html = requests.get("http://whattomine.com/coins.json")
+                data = html.json()["coins"]
+                filtered_coins = [[key, int(data[key]["btc_revenue24"])*get_price('bitcoin')/self.mining_speed[key]["algorithm"]] for key in data if data[key]["algorithm"].lower() == msg[2].lower()].sort(key=lambda x: x[1])
+                embed = discord.Embed(title="Mining Profitability", description="On algorithm" + msg[2])
+                count = 0
+                for entry in filtered_coins:
+                    if count < 5:
+                        embed.add_field(name="#" + count + ": " + entry[0], value="US$ " + entry[1] + self.mining_units[msg[2]])
+                    else:
+                        break
+                embed.set_footer(text="Information provided by http://whattomine.com/")
+                await client.send_message(message.channel, embed=embed)
+            elif msg[1] == 'id':
                 if len(msg) < 4:
                     msg = '[!] No ID found.'
                     await client.send_message(message.channel, msg)

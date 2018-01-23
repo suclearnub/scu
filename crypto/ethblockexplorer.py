@@ -4,6 +4,7 @@ import asyncio
 import shlex
 from modules.botModule import BotModule
 from modules.crypto.enslookup import ENSLookup
+from modules.crypto.utils import *
 
 class ETHBlockExplorer(BotModule):
     name = 'ethblockexplorer'
@@ -47,7 +48,7 @@ class ETHBlockExplorer(BotModule):
 
     async def parse_command(self, message, client):
         msg = shlex.split(message.content)
-        price_one_ether = self.ethprice()
+        price_one_ether = get_price('ethereum')
         if len(msg) > 2: # !eth <type> <hash>
             if msg[1] == 'tx':
                 html = requests.get("https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=" + msg[2] + "&apikey=" + self.api_key)
