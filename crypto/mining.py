@@ -82,6 +82,12 @@ class Mining(BotModule):
             if msg[1] == 'profit':
                 if len(msg) < 3:
                     msg[2] = 'equihash'
+                try:
+                    self.mining_units[msg[2]]
+                except KeyError:
+                    msg = "[!] Algorithm does not exist."
+                    await client.send_message(message.channel, embed=embed)
+                    return
                 html = requests.get("http://whattomine.com/coins.json")
                 data = html.json()["coins"]
                 filtered_coins = [[key, float(data[key]["btc_revenue24"])*get_price('bitcoin')/self.mining_speed[data[key]["algorithm"].lower()]] for key in data if data[key]["algorithm"].lower() == msg[2].lower()]
@@ -90,7 +96,7 @@ class Mining(BotModule):
                 count = 1
                 for entry in filtered_coins:
                     if count <= 5:
-                        embed.add_field(name="#" + str(count) + ": " + str(entry[0]), value="US$ " + str(entry[1]) + " " + self.mining_units[msg[2]])
+                        embed.add_field(name="#" + str(count) + ": " + str(entry[0]), value="US$ " + "{0:.6f}".format(entry[1]) + " " + self.mining_units[msg[2]], inline=False)
                         count += 1;
                     else:
                         break
