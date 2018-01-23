@@ -84,12 +84,14 @@ class Mining(BotModule):
                     msg[2] = 'equihash'
                 html = requests.get("http://whattomine.com/coins.json")
                 data = html.json()["coins"]
-                filtered_coins = [[key, int(data[key]["btc_revenue24"])*get_price('bitcoin')/self.mining_speed[key]["algorithm"]] for key in data if data[key]["algorithm"].lower() == msg[2].lower()].sort(key=lambda x: x[1])
-                embed = discord.Embed(title="Mining Profitability", description="On algorithm" + msg[2])
+                filtered_coins = [[key, float(data[key]["btc_revenue24"])*get_price('bitcoin')/self.mining_speed[data[key]["algorithm"]].lower()] for key in data if data[key]["algorithm"].lower() == msg[2].lower()].sort(key=lambda x: x[1])
+                filtered_coins.sort(key=lambda x: x[1])
+                embed = discord.Embed(title="Mining Profitability", description="On algorithm " + msg[2])
                 count = 0
                 for entry in filtered_coins:
                     if count < 5:
-                        embed.add_field(name="#" + count + ": " + entry[0], value="US$ " + entry[1] + self.mining_units[msg[2]])
+                        embed.add_field(name="#" + str(count) + ": " + str(entry[0]), value="US$ " + str(entry[1]) + " " + self.mining_units[msg[2]])
+                        count += 1;
                     else:
                         break
                 embed.set_footer(text="Information provided by http://whattomine.com/")
