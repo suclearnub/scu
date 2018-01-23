@@ -33,7 +33,7 @@ class Mining(BotModule):
     # Divide by how many to get 'sensible' number
     factor = {'bitcoin-gold': 0.001,
              'zclassic': 0.001,
-             'zcash': 0.00,
+             'zcash': 0.001,
              'zencash': 0.001,
              }
 
@@ -69,9 +69,9 @@ class Mining(BotModule):
 
     def prettify_hashrate(self, raw_hashrate, coin):
         try:
-            return str(self.comma_money(raw_hashrate/self.factor[coin])) + ' ' + self.units[coin]
+            return self.comma_money(float("{0:.1f}".format(raw_hashrate/self.factor[coin]))) + ' ' + self.units[coin]
         except KeyError:
-            return str(self.comma_money(raw_hashrate)) + ' H/s'
+            return str(self.comma_money(raw_hashrate)) + ' xH/s'
 
     def comma_money(self, value):
         return "{:,}".format(value)
